@@ -1,18 +1,18 @@
 package com.deliverytech.delivery_api.controller;
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.deliverytech.delivery_api.model.Cliente;
+//import com.deliverytech.delivery_api.model.Cliente;
 
 @RestController 
 public class ClienteController {
     
-    @GetMapping ("/cliente")
+    /*@GetMapping ("/cliente")
     public Cliente getCliente() {
         return new Cliente("Alerson", "Coutinho");
     }
@@ -42,6 +42,6 @@ public class ClienteController {
     public Cliente getClienteByQueryParam(
         @RequestParam String nome, @RequestParam String sobrenome) {
         return new Cliente(nome, sobrenome);
-    }
+    }*/
  
 }
