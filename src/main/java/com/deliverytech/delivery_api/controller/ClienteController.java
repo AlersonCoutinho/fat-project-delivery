@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,10 @@ import com.deliverytech.delivery_api.dto.req.ClienteReqDTO;
 import com.deliverytech.delivery_api.dto.res.ClienteResDTO;
 import com.deliverytech.delivery_api.services.ClienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +29,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping ("/clientes")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
+@Tag(name = "Clientes", description = " Operações relacionadas aos clientes")
 public class ClienteController {
     private final ClienteService clienteService;
 
+    @PostMapping
     /*
     Anotatio @Valid para validar o objeto cliente recebido no corpo da requisição
     através da anotação @RequestBody, que por sua vez indica que o obketo cliente será enviado no corpo da requisição
@@ -37,7 +44,13 @@ public class ClienteController {
             ClienteResDTO cliente = clienteService.cadastrarCliente(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
     }
-
+    @Operation(summary = "Cadastras cliente", 
+                description = "Cadastrar um novo cliente no sistema"
+    )
+    @ApiResponses({
+       @ApiResponse(responseCode = "201", description = "Cliente Cadastrado com Sucesso"),
+       @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
     /*
     Listar todos os clientes ativos
     */
