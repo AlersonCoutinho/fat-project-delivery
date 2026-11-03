@@ -1,47 +1,96 @@
 package com.deliverytech.delivery_api.controller;
-//import java.util.ArrayList;
-//import java.util.List;
 
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//import com.deliverytech.delivery_api.model.Cliente;
+import com.deliverytech.delivery_api.dto.req.ClienteReqDTO;
+import com.deliverytech.delivery_api.dto.res.ClienteResDTO;
+import com.deliverytech.delivery_api.services.ClienteService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController 
+@RequestMapping ("/clientes")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ClienteController {
-    
-    /*@GetMapping ("/cliente")
-    public Cliente getCliente() {
-        return new Cliente("Alerson", "Coutinho");
+    private final ClienteService clienteService;
+
+    /*
+    Anotatio @Valid para validar o objeto cliente recebido no corpo da requisição
+    através da anotação @RequestBody, que por sua vez indica que o obketo cliente será enviado no corpo da requisição
+    */
+    public ResponseEntity<ClienteResDTO>
+    cadastrarCliente(@Valid 
+        @RequestBody ClienteReqDTO dto) {
+            ClienteResDTO cliente = clienteService.cadastrarCliente(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
     }
 
-          // Simulando um banco de dados com uma lista de clientes
-    // Retornando uma List
-    // https://localhost:8080/clientes
-    @GetMapping("/clientes")
-    public List<Cliente> getClientes() {
-        List<Cliente> clientes = new ArrayList<>();
-        clientes.add(new Cliente("João", "Silva"));
-        clientes.add(new Cliente("Maria", "Souza"));
-        clientes.add(new Cliente("Pedro", "Oliveira"));
-        return clientes;
+    /*
+    Listar todos os clientes ativos
+    */
+    @GetMapping
+    public ResponseEntity<List<ClienteResDTO>> listar() {
+        List<ClienteResDTO> clientes = clienteService.listarClientesAtivos();
+        return ResponseEntity.ok(clientes);
     }
- 
-    // O valor na URL diretamente injetado no método
-    // https://localhost:8080/cliente/João/Silva
-    @GetMapping("/cliente/{nome}/{sobrenome}")
-    public Cliente getClienteByPathVariable(@PathVariable String nome, @PathVariable String sobrenome) {
-        return new Cliente(nome, sobrenome);
+
+    /*
+    Buscar cliente por ID
+    */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id,
+        @Valid @RequestBody ClienteReqDTO dto
+    ) {
+        ClienteResDTO cliente = clienteService.atualizarCliente(id, dto);
+
+        if (cliente != null) {
+            return ResponseEntity.ok(cliente);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
- 
-    // build onde os valores são passados como query params
-    // https://localhost:8080/cliente/query?nome=João&sobrenome=Silva
-    @GetMapping("/cliente/query")
-    public Cliente getClienteByQueryParam(
-        @RequestParam String nome, @RequestParam String sobrenome) {
-        return new Cliente(nome, sobrenome);
-    }*/
+
+    /*
+    Atualizar cliente
+    */
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResDTO> atualizarCliente(
+            @PathVariable Long id,
+            @Valid @RequestBody ClienteReqDTO dto) {
+        ClienteResDTO cliente = clienteService.atualizarCliente(id, dto);
+        return ResponseEntity.ok(cliente);
+    }
+
+    /*
+    ativa e desativar cliente (soft delete)
+    */
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ClienteResDTO> ativarDesativarCliente(
+            @PathVariable Long id) {
+        ClienteResDTO cliente = clienteService.ativarDesativarCliente(id);
+        return ResponseEntity.ok(cliente);
+    }
+
+    /*
+    Buscar cliente por email
+    */
+    @GetMapping("/email/{email}")
+    public ResponseEntity<ClienteResDTO> buscarPorEmail(@PathVariable String email) {
+        ClienteResDTO cliente = clienteService.buscarClientePorEmail(email);
+        return ResponseEntity.ok(cliente);
+    }
  
 }
