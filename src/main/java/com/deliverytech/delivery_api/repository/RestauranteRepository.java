@@ -4,6 +4,8 @@ import com.deliverytech.delivery_api.model.Restaurante;
 
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List; 
@@ -26,6 +28,14 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
 
     // Top 5 restaurantes por nome (ordem alfabética)
     List<Restaurante> findTop5ByOrderByNomeAsc();
+
+    // Paginados (usados em listarRestaurantes)
+    Page<Restaurante> findByCategoriaAndAtivo(String categoria, Boolean ativo, Pageable pageable);
+    Page<Restaurante> findByCategoria(String categoria, Pageable pageable);
+    Page<Restaurante> findByAtivo(Boolean ativo, Pageable pageable);
+    
+    // Usado em buscarRestaurantesPorCategoria
+    List<Restaurante> findByCategoriaAndAtivoTrue(String categoria);
 
     // Query customizada - restaurantes com produtos
     @Query("SELECT DISTINCT r FROM Restaurante r JOIN r.produtos p WHERE r.ativo = true")
